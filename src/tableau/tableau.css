@@ -1,80 +1,216 @@
-/* 
- * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
- * See LICENSE in the project root for license information.
- */
-
- html,
- body {
-     width: 100%;
-     height: 100%;
-     margin: 0;
-     padding: 0;
- }
- 
- ul {
-     margin: 0;
-     padding: 0;
- }
- 
- .ms-welcome__header {
-    padding: 20px;
-    padding-bottom: 30px;
-    padding-top: 100px;
-    display: -webkit-flex;
+/* Reset & Base */
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #2c3e50;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Container */
+  .ms-welcome__header {
+    padding: 80px 20px 40px;
     display: flex;
-    -webkit-flex-direction: column;
     flex-direction: column;
     align-items: center;
- }
-
- .ms-welcome__main {
-    display: -webkit-flex;
+    border-bottom: 1px solid #dce3ea;
+  }
+  
+  .ms-welcome__header h1 {
+    font-weight: 600;
+    font-size: 2.8rem;
+    color: #34495e;
+    margin: 0;
+    letter-spacing: 0.03em;
+  }
+  
+  /* Main content */
+  .ms-welcome__main {
     display: flex;
-    -webkit-flex-direction: column;
     flex-direction: column;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    -webkit-align-items: center;
     align-items: center;
-    -webkit-flex: 1 0 0;
-    flex: 1 0 0;
+    padding: 30px 24px;
+    flex: 1 0 auto;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.08);
+  }
+  
+  /* Section title */
+  .ms-welcome__main > h2 {
+    width: 100%;
+    text-align: center;
+    font-weight: 500;
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e1e6eb;
+    padding-bottom: 12px;
+  }
+  
+  /* Features list */
+  .ms-welcome__features {
+    list-style: none;
+    margin-top: 24px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .ms-welcome__features.ms-List .ms-ListItem {
+    display: flex;
+    align-items: center;
+    background-color: #f9fbfc;
+    padding: 18px 22px;
+    border-radius: 8px;
+    border: 1px solid #dce3ea;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    cursor: default;
+  }
+  
+  .ms-welcome__features.ms-List .ms-ListItem:hover {
+    background-color: #e6f0fb;
+    border-color: #90b8ff;
+  }
+  
+  .ms-welcome__features.ms-List .ms-ListItem > .ms-Icon {
+    margin-right: 16px;
+    font-size: 1.8rem;
+    color: #3498db;
+  }
+  
+  /* Buttons */
+  .ms-welcome__action.ms-Button--hero {
+    margin-top: 36px;
+  }
+  
+  .ms-Button.ms-Button--hero {
+    background-color: #3498db;
+    border-radius: 6px;
+    padding: 14px 32px;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.25s ease;
+    box-shadow: 0 4px 12px rgb(52 152 219 / 0.4);
+  }
+  
+  .ms-Button.ms-Button--hero:hover,
+  .ms-Button.ms-Button--hero:focus {
+    background-color: #217dbb;
+    box-shadow: 0 6px 16px rgb(33 125 187 / 0.6);
+    outline: none;
+  }
+  
+  /* Bold text */
+  b {
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  
+  /* Header */
+  header {
+    background-color: #ffffff;
+    color: #2c3e50;
+    padding: 16px 24px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #dce3ea;
+  }
+  
+  /* Main padding */
+  main {
+    padding: 24px 24px;
+  }
+  
+  /* Controls & actions */
+  .controls, .actions {
+    margin-bottom: 20px;
+  }
+  
+  /* Buttons generic */
+  button {
+    background-color: #2980b9;
+    color: #ffffff;
+    border: none;
     padding: 10px 20px;
- }
- 
- .ms-welcome__main > h2 {
-     width: 100%;
-     text-align: center;
- }
- 
- .ms-welcome__features {
-     list-style-type: none;
-     margin-top: 20px;
- }
- 
- .ms-welcome__features.ms-List .ms-ListItem {
-     padding-bottom: 20px;
-     display: -webkit-flex;
-     display: flex;
- }
- 
- .ms-welcome__features.ms-List .ms-ListItem > .ms-Icon {
-     margin-right: 10px;
- }
- 
- .ms-welcome__action.ms-Button--hero {
-     margin-top: 30px;
- }
- 
-.ms-Button.ms-Button--hero .ms-Button-label {
-  color: #0078d7;
-}
-
-.ms-Button.ms-Button--hero:hover .ms-Button-label,
-.ms-Button.ms-Button--hero:focus .ms-Button-label{
-  color: #005a9e;
-  cursor: pointer;
-}
-
-b {
-    font-weight: bold;
-}
+    margin-right: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 3px 8px rgb(41 128 185 / 0.35);
+  }
+  
+  button:hover:not(:disabled) {
+    background-color: #1f6391;
+    box-shadow: 0 5px 14px rgb(31 99 145 / 0.6);
+  }
+  
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  
+  /* Style controls container */
+  .style-controls {
+    border: 1px solid #dce3ea;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #fefefe;
+  }
+  
+  .style-controls label {
+    display: inline-block;
+    margin-right: 16px;
+    font-size: 14px;
+    color: #34495e;
+    user-select: none;
+  }
+  
+  /* Status box */
+  #status {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background-color: #f4f7fa;
+    border: 1px solid #dce3ea;
+    min-height: 32px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #34495e;
+    user-select: text;
+  }
+  
+  /* Scrollbar on main if overflow */
+  .ms-welcome__main {
+    overflow-y: auto;
+    max-height: 70vh;
+    scrollbar-width: thin;
+    scrollbar-color: #b0bec5 #f5f7fa;
+  }
+  
+  .ms-welcome__main::-webkit-scrollbar {
+    width: 7px;
+  }
+  
+  .ms-welcome__main::-webkit-scrollbar-track {
+    background: #f5f7fa;
+    border-radius: 4px;
+  }
+  
+  .ms-welcome__main::-webkit-scrollbar-thumb {
+    background: #90a4ae;
+    border-radius: 4px;
+  }
+  

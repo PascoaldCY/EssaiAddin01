@@ -1,0 +1,59 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
+<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tableau - Test Add-in</title>
+
+    <!-- Office JavaScript API -->
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
+    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
+    <link rel="stylesheet" href="https://res-1.cdn.office.net/files/fabric-cdn-prod_20230815.002/office-ui-fabric-core/11.1.0/css/fabric.min.css"/>
+
+    <!-- Template styles -->
+    <link href="tableau.css" rel="stylesheet" type="text/css" />
+    <script src="tableau.js" defer></script>
+</head>
+
+<body class="ms-font-m ms-welcome ms-Fabric">
+    <header>
+        <h1>Exercice : personnaliser un tableau</h1>
+    </header>
+
+    <main>
+        <div class="controls">
+            <button id="init-btn">Initialiser (insérer document + tableau)</button>
+            <button id="clear-btn">Effacer le document</button>
+        </div>
+
+        <fieldset class="style-controls">
+            <legend>Style du tableau</legend>
+            <label>Couleur en-tête: <input id="header-color" type="color" value="#0078d7"/></label>
+            <label>Couleur bandes: <input id="band-color" type="color" value="#f3f3f3"/></label>
+            <label>Bords: <input id="border-color" type="color" value="#cccccc"/></label>
+            <label>Alignement:
+                <select id="cell-align">
+                    <option value="left">Gauche</option>
+                    <option value="center" selected>Centre</option>
+                    <option value="right">Droite</option>
+                </select>
+            </label>
+            <label><input id="banded" type="checkbox" checked/> Bandes alternées</label>
+            <button id="apply-style-btn">Appliquer le style</button>
+        </fieldset>
+
+        <div class="actions">
+            <button id="validate-btn">Valider le tableau</button>
+        </div>
+
+        <div id="status" aria-live="polite"></div>
+    </main>
+</body>
+
+</html>
