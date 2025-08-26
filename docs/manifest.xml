@@ -4,10 +4,10 @@
   <Version>1.0.0.0</Version>
   <ProviderName>Contoso</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Nom"/>
-  <Description DefaultValue="A template to get started."/>
-  <IconUrl DefaultValue="https://www.contoso.com/assets/icon-32.png"/>
-  <HighResolutionIconUrl DefaultValue="https://www.contoso.com/assets/icon-64.png"/>
+  <DisplayName DefaultValue="Mettre en page un tableau de façon personnalisée"/>
+  <Description DefaultValue="Un raccourci pour créer des tableaux"/>
+  <IconUrl DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://www.contoso.com/help"/>
   <AppDomains>
     <AppDomain>https://www.contoso.com</AppDomain>
@@ -16,7 +16,7 @@
     <Host Name="Document"/>
   </Hosts>
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://www.contoso.com/taskpane.html"/>
+    <SourceLocation DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/tableau.html"/>
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
@@ -62,23 +62,23 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://www.contoso.com/assets/icon-16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://www.contoso.com/assets/icon-32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://www.contoso.com/assets/icon-80.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812"/>
-        <bt:Url id="Commands.Url" DefaultValue="https://www.contoso.com/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://www.contoso.com/taskpane.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://https://pascoaldcy.github.io/EssaiAddin01//tableau.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Montre le panneau"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Ajouter tableau"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="GetStarted.Description" DefaultValue="Your sample add-in loaded successfully. Go to the HOME tab and click the 'Show Task Pane' button to get started."/>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Cliquez pour montrer le logiciel"/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Cliquez pour ouvrir la fenêtre"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
