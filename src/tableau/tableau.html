@@ -53,6 +53,17 @@
         </div>
 
         <div id="status" aria-live="polite"></div>
+        <!-- Confirm maison (affiché si window.confirm n'est pas supporté) -->
+        <div id="confirm-panel" class="confirm-panel" hidden>
+            <div class="confirm-modal">
+                <p id="confirm-text">Êtes-vous sûr ?</p>
+                <div class="confirm-buttons">
+                    <button id="confirm-yes">Oui</button>
+                    <button id="confirm-no" type="button">Non</button>
+                </div>
+            </div>
+        </div>
+  
     </main>
 </body>
 

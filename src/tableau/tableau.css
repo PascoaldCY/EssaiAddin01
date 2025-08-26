@@ -1,216 +1,303 @@
-/* Reset & Base */
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0; padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f7fa;
-    color: #2c3e50;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+/* ===========================
+   LUXE DARK DRIP — UI THEME
+   (plug & play: remplace ton CSS)
+   =========================== */
+   :root {
+    /* Couleurs (dark-first) */
+    --bg: #0b0e12;           /* fond global charbon */
+    --surface: #0f131a;      /* carte principale */
+    --panel: #121821;        /* panneaux secondaires */
+    --line: #1c2330;         /* bordures subtiles */
+    --ink: #f0f0f5;           /* texte principal → plus lisible */
+    --muted: #b0b3c6;         /* texte secondaire → plus lisible */
   
-  /* Container */
-  .ms-welcome__header {
-    padding: 80px 20px 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-bottom: 1px solid #dce3ea;
-  }
+    /* Accent “or brossé” */
+    --gold: #cdb47a;
+    --gold-hi: #e2cb8c;
   
-  .ms-welcome__header h1 {
-    font-weight: 600;
-    font-size: 2.8rem;
-    color: #34495e;
-    margin: 0;
-    letter-spacing: 0.03em;
-  }
+    /* États */
+    --success: #2fbf71;
+    --warning: #ffb84d;
+    --danger:  #ff5a70;
   
-  /* Main content */
-  .ms-welcome__main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px 24px;
-    flex: 1 0 auto;
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgb(0 0 0 / 0.08);
-  }
+    /* Rounds & ombres */
+    --r-sm: 10px;
+    --r-md: 12px;
+    --r-lg: 16px;
+    --shadow-1: 0 10px 30px rgba(0,0,0,.35);
+    --shadow-2: 0 18px 50px rgba(0,0,0,.45);
   
-  /* Section title */
-  .ms-welcome__main > h2 {
-    width: 100%;
-    text-align: center;
-    font-weight: 500;
-    font-size: 1.8rem;
-    color: #2c3e50;
-    margin-bottom: 24px;
-    border-bottom: 1px solid #e1e6eb;
-    padding-bottom: 12px;
+    /* Typo / sizing */
+    --font: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+    --w-container: 920px;
+    --pad: 22px;
   }
-  
-  /* Features list */
-  .ms-welcome__features {
-    list-style: none;
-    margin-top: 24px;
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+   
+/* Titre principal et secondaire */
+header h1,
+.ms-welcome__main > h2 {
+  color: #f0f0f5; /* texte bien lisible */
+}
+
+/* Légendes et labels des inputs */
+.style-controls legend,
+.style-controls label {
+  color: #d8dbe3; /* texte clair sur fond sombre */
+}
+
+/* Texte du status */
+#status {
+  color: #e7eaf0; /* légèrement plus clair pour contraste */
+}
+
+/* Texte du modal de confirmation */
+.confirm-modal p#confirm-text {
+  color: #f0f0f5; 
+}
+
+/* Boutons dans le modal */
+.confirm-buttons button {
+  color: #f0f0f5; 
+  font-weight: 600;
+}
+
+/* Ajout pour boutons Danger pour contraste */
+.confirm-buttons .danger {
+  color: #ffd0d6; 
+}
+
+
+  *{ box-sizing:border-box }
+  html, body{ height:100% }
+  body{
+    margin:0;
+    font-family:var(--font);
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 800px at 80% -10%, #152033 0%, transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, #121a28 0%, transparent 55%),
+      var(--bg);
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   }
-  
-  .ms-welcome__features.ms-List .ms-ListItem {
-    display: flex;
-    align-items: center;
-    background-color: #f9fbfc;
-    padding: 18px 22px;
-    border-radius: 8px;
-    border: 1px solid #dce3ea;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-    cursor: default;
+   
+  /* Header — fin, discret, précieux */
+  header{
+    position:sticky; top:0; z-index:10;
+    display:flex; align-items:center; gap:12px;
+    padding:14px 28px;
+    background:linear-gradient(180deg, rgba(16,20,28,.9), rgba(16,20,28,.75));
+    backdrop-filter: blur(6px);
+    border-bottom:1px solid rgba(205,180,122,.18);
   }
-  
-  .ms-welcome__features.ms-List .ms-ListItem:hover {
-    background-color: #e6f0fb;
-    border-color: #90b8ff;
+  header::after{
+    content:"";
+    margin-left:auto;
+    height:1px; width:120px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity:.35;
   }
-  
-  .ms-welcome__features.ms-List .ms-ListItem > .ms-Icon {
-    margin-right: 16px;
-    font-size: 1.8rem;
-    color: #3498db;
+   
+  /* Container principal */
+  .ms-welcome__main{
+    width:100%; max-width:var(--w-container);
+    margin:36px auto;
+    padding:32px var(--pad);
+    background:linear-gradient(180deg, rgba(20,26,36,.95), rgba(18,23,33,.95));
+    border:1px solid rgba(205,180,122,.14);
+    border-radius:var(--r-lg);
+    box-shadow:var(--shadow-2);
   }
-  
-  /* Buttons */
-  .ms-welcome__action.ms-Button--hero {
-    margin-top: 36px;
+   
+  /* Titre section — propre & massif */
+  .ms-welcome__main>h2{
+    margin:0 0 22px;
+    font-size:clamp(1.6rem, 2.4vw, 2.1rem);
+    font-weight:800;
+    letter-spacing:.01em;
+    color:var(--ink);
+    text-align:left;
+    position:relative;
   }
-  
-  .ms-Button.ms-Button--hero {
-    background-color: #3498db;
-    border-radius: 6px;
-    padding: 14px 32px;
-    border: none;
-    font-weight: 600;
-    font-size: 1rem;
-    color: #ffffff;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.25s ease;
-    box-shadow: 0 4px 12px rgb(52 152 219 / 0.4);
+  .ms-welcome__main>h2::after{
+    content:"";
+    display:block;
+    margin-top:10px;
+    width:72px; height:2px;
+    background:linear-gradient(90deg, var(--gold), transparent);
+    border-radius:999px;
+    opacity:.8;
   }
-  
-  .ms-Button.ms-Button--hero:hover,
-  .ms-Button.ms-Button--hero:focus {
-    background-color: #217dbb;
-    box-shadow: 0 6px 16px rgb(33 125 187 / 0.6);
-    outline: none;
+   
+  /* Grille des features (si tu l’utilises) */
+  .ms-welcome__features{
+    list-style:none; padding:0; margin-top:26px;
+    display:grid; gap:18px;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
   }
-  
-  /* Bold text */
-  b {
-    font-weight: 600;
-    color: #2c3e50;
+  .ms-welcome__features.ms-List .ms-ListItem{
+    display:flex; align-items:center; gap:14px;
+    background:linear-gradient(180deg, rgba(18,24,33,.9), rgba(16,22,30,.9));
+    border:1px solid var(--line);
+    border-radius:var(--r-md);
+    padding:18px 18px;
+    transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
   }
-  
-  /* Header */
-  header {
-    background-color: #ffffff;
-    color: #2c3e50;
-    padding: 16px 24px;
-    font-weight: 600;
-    font-size: 1.1rem;
-    border-bottom: 1px solid #dce3ea;
+  .ms-welcome__features.ms-List .ms-ListItem:hover{
+    transform:translateY(-1px);
+    border-color:rgba(205,180,122,.28);
+    box-shadow:0 10px 24px rgba(0,0,0,.35);
   }
-  
-  /* Main padding */
-  main {
-    padding: 24px 24px;
+  .ms-welcome__features.ms-List .ms-ListItem>.ms-Icon{
+    font-size:1.6rem; color:var(--gold);
   }
-  
-  /* Controls & actions */
-  .controls, .actions {
-    margin-bottom: 20px;
+   
+  /* Boutons — or brossé, sobres */
+  button, .ms-Button.ms-Button--hero{
+    appearance:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:8px;
+    width:100%;
+    padding:12px 18px;
+    background:linear-gradient(180deg, #2a3344, #222b3a);
+    color:var(--ink);
+    border:1px solid rgba(205,180,122,.28);
+    border-radius:var(--r-md);
+    font-weight:700;
+    letter-spacing:.02em;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
   }
-  
-  /* Buttons generic */
-  button {
-    background-color: #2980b9;
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    margin-right: 10px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 3px 8px rgb(41 128 185 / 0.35);
+  button:hover:not(:disabled),
+  .ms-Button.ms-Button--hero:hover{
+    transform:translateY(-1px);
+    border-color:rgba(226,203,140,.45);
+    background:linear-gradient(180deg, #313a4e, #273043);
   }
-  
-  button:hover:not(:disabled) {
-    background-color: #1f6391;
-    box-shadow: 0 5px 14px rgb(31 99 145 / 0.6);
+  button:active{ transform:translateY(0) scale(.99) }
+  button:disabled{ opacity:.5; cursor:not-allowed; box-shadow:none }
+   
+  /* Variantes */
+  button.primary{
+    background:linear-gradient(180deg, #3a3f2b, #2e331f);
+    color:#fff;
+    border-color:rgba(205,180,122,.45);
   }
-  
-  button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    box-shadow: none;
+  button.primary:hover{ background:linear-gradient(180deg, #4a5135, #353b24) }
+   
+  button.secondary{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--line);
   }
-  
-  /* Style controls container */
-  .style-controls {
-    border: 1px solid #dce3ea;
-    padding: 14px 16px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    background-color: #fefefe;
+  button.secondary:hover{
+    border-color:rgba(205,180,122,.38);
+    color:#f7f3e6;
   }
-  
-  .style-controls label {
-    display: inline-block;
-    margin-right: 16px;
-    font-size: 14px;
-    color: #34495e;
-    user-select: none;
+   
+  button.ghost{
+    background:transparent;
+    border:1px dashed rgba(205,180,122,.28);
+    color:var(--muted);
   }
-  
-  /* Status box */
-  #status {
-    margin-top: 12px;
-    padding: 10px 14px;
-    background-color: #f4f7fa;
-    border: 1px solid #dce3ea;
-    min-height: 32px;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #34495e;
-    user-select: text;
+  button.ghost:hover{
+    color:var(--ink);
+    border-color:rgba(226,203,140,.5);
   }
-  
-  /* Scrollbar on main if overflow */
-  .ms-welcome__main {
-    overflow-y: auto;
-    max-height: 70vh;
-    scrollbar-width: thin;
-    scrollbar-color: #b0bec5 #f5f7fa;
+   
+  /* Focus visible (access) */
+  :where(button, input, select, textarea):focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:2px;
+    border-radius:12px;
   }
-  
-  .ms-welcome__main::-webkit-scrollbar {
-    width: 7px;
+   
+  /* Panneau contrôles */
+  .style-controls{
+    margin:18px 0 22px;
+    padding:16px var(--pad);
+    background:linear-gradient(180deg, rgba(18,24,33,.8), rgba(16,22,30,.8));
+    border:1px solid var(--line);
+    border-radius:var(--r-md);
   }
-  
-  .ms-welcome__main::-webkit-scrollbar-track {
-    background: #f5f7fa;
-    border-radius: 4px;
+  .style-controls label{
+    display:inline-flex; align-items:center; gap:8px;
+    margin:0 16px 12px 0;
+    font-size:14px; font-weight:600; color:var(--ink);
   }
-  
-  .ms-welcome__main::-webkit-scrollbar-thumb {
-    background: #90a4ae;
-    border-radius: 4px;
+   
+  /* Inputs */
+  .style-controls input[type="color"],
+  .style-controls input[type="text"],
+  .style-controls input[type="number"],
+  .style-controls select{
+    height:36px; padding:0 10px;
+    color:var(--ink); background:#0e1420;
+    border:1px solid #212a3a; border-radius:10px;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.35);
   }
-  
+  .style-controls input[type="color"]{ padding:0; width:48px; cursor:pointer }
+  .style-controls input[type="checkbox"]{ width:16px; height:16px; accent-color:var(--gold) }
+  .style-controls select{ min-width:120px }
+   
+  /* Zone statut */
+  #status{
+    margin-top:14px;
+    padding:12px 14px;
+    min-height:36px;
+    background:linear-gradient(180deg, #0f1520, #0e131c);
+    border:1px solid var(--line);
+    border-radius:var(--r-md);
+    color:var(--muted);
+  }
+  #status.success{ border-color: rgba(47,191,113,.5); color:#c9f1dd }
+  #status.warn{    border-color: rgba(255,184,77,.5); color:#ffe7bf }
+  #status.error{   border-color: rgba(255,90,112,.55); color:#ffd0d6 }
+   
+  /* Scrolls discrets */
+  .ms-welcome__main{ scrollbar-width:thin; scrollbar-color:#32415b #0f131a }
+  .ms-welcome__main::-webkit-scrollbar{ width:8px }
+  .ms-welcome__main::-webkit-scrollbar-track{ background:#0f131a; border-radius:10px }
+  .ms-welcome__main::-webkit-scrollbar-thumb{
+    background:linear-gradient(180deg, #2a3450, #1e2740);
+    border-radius:10px;
+    border:1px solid #28314a;
+  }
+   
+  /* Modal de confirmation */
+  .confirm-panel[hidden]{ display:none }
+  .confirm-panel{
+    position:fixed; inset:0; z-index:9999;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(4,6,10,.6);
+    backdrop-filter: blur(6px);
+  }
+  .confirm-modal{
+    width:min(92vw, 420px);
+    background:linear-gradient(180deg, #121926, #0f1622);
+    border:1px solid rgba(205,180,122,.22);
+    border-radius:var(--r-lg);
+    box-shadow:var(--shadow-1);
+    padding:20px 22px;
+  }
+  .confirm-buttons{
+    display:flex; gap:12px; justify-content:flex-end; margin-top:16px;
+  }
+  .confirm-buttons .danger{
+    background:linear-gradient(180deg, #6a1f2a, #571823);
+    border:1px solid rgba(255,90,112,.5);
+    color:#ffe5ea;
+  }
+  .confirm-buttons .danger:hover{
+    background:linear-gradient(180deg, #7b2531, #5b1b26);
+  }
+   
+  /* Responsive */
+  @media (max-width: 720px){
+    .ms-welcome__main{ margin:24px 12px; padding:24px 16px }
+  }
+   
+  /* Motion respect */
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important }
+  }
