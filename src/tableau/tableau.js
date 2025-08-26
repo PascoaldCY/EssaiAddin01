@@ -2,11 +2,16 @@
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Word) {
-    document.getElementById("init-btn").onclick = initializeDocument;
-    document.getElementById("clear-btn").onclick = clearDocument;
-    document.getElementById("apply-style-btn").onclick = applyTableStyle;
-    document.getElementById("validate-btn").onclick = validateTable;
-    setStatus("Add-in prêt. Cliquez sur Initialiser pour insérer le document et le tableau.");
+      // Bouton de démarrage
+      document.getElementById("start-btn").onclick = startExercise;
+
+      // Boutons de l'exercice
+      document.getElementById("init-btn").onclick = initializeDocument;
+      document.getElementById("clear-btn").onclick = clearDocument;
+      document.getElementById("apply-style-btn").onclick = applyTableStyle;
+      document.getElementById("validate-btn").onclick = validateTable;
+
+      setStatus("Cliquez sur 'Commencer l'exercice' pour démarrer.");
   }
 });
 
@@ -15,14 +20,8 @@ function setStatus(text) {
   if (s) s.textContent = text;
 }
 
-/** --------- CONFIRM maison (fallback si window.confirm n'est pas dispo) --------- */
+/** --------- CONFIRM maison --------- */
 function askConfirm(message) {
-  try {
-    if (typeof window.confirm === "function") {
-      return Promise.resolve(window.confirm(message));
-    }
-  } catch (e) { /* ignore, fallback */ }
-
   return new Promise((resolve) => {
     const panel = document.getElementById("confirm-panel");
     const text = document.getElementById("confirm-text");
@@ -44,19 +43,47 @@ function askConfirm(message) {
 
 /** --------- Helpers --------- */
 function getWordAlignment(value) {
-  // map des valeurs UI -> enum Word
   if (Word && Word.Alignment) {
     if (value === "center") return Word.Alignment.centered;
     if (value === "right")  return Word.Alignment.right;
     return Word.Alignment.left;
   }
-  // fallback string
   if (value === "center") return "Centered";
   if (value === "right")  return "Right";
   return "Left";
 }
 
-/** --------- Actions --------- */
+/** --------- Bouton de départ --------- */
+async function startExercise() {
+  await Word.run(async (context) => {
+    const body = context.document.body;
+    body.paragraphs.load("items");
+    await context.sync();
+
+    const notEmpty =
+      body.paragraphs.items.length > 1 ||
+      (body.paragraphs.items.length === 1 && body.paragraphs.items[0].text.trim() !== "");
+
+    let ok = true;
+    if (notEmpty) {
+        ok = await askConfirm("Le document contient déjà du texte. Voulez-vous l'effacer pour commencer l'exercice ?");
+        if (!ok) {
+            setStatus("Exercice annulé.");
+            return;
+        }
+        body.clear();
+        await context.sync();
+    }
+
+    // Affiche le reste des contrôles et masque le bouton de départ
+    document.getElementById("exercise-container").style.display = "block";
+    document.getElementById("start-btn").style.display = "none";
+
+    setStatus("Prêt ! Insérez le tableau ou appliquez un style.");
+  });
+}
+
+/** --------- Actions existantes --------- */
 async function initializeDocument() {
   try {
     await Word.run(async (context) => {
@@ -86,7 +113,6 @@ async function initializeDocument() {
       const table = body.insertTable(data.length, data[0].length, Word.InsertLocation.end, data);
       table.styleBuiltIn = "TableGrid";
 
-      // Charger lignes pour accéder à l'en-tête
       table.rows.load("items");
       await context.sync();
 
@@ -109,7 +135,7 @@ async function applyTableStyle() {
     const headerColor = document.getElementById("header-color").value;
     const bandColor   = document.getElementById("band-color").value;
     const borderColor = document.getElementById("border-color").value;
-    const alignUI     = document.getElementById("cell-align").value; // left | center | right
+    const alignUI     = document.getElementById("cell-align").value;
     const banded      = document.getElementById("banded").checked;
 
     await Word.run(async (context) => {
@@ -117,46 +143,33 @@ async function applyTableStyle() {
       tables.load("items");
       await context.sync();
 
-      if (tables.items.length === 0) {
-        setStatus("Aucun tableau trouvé.");
-        return;
-      }
-
+      if (tables.items.length === 0) { setStatus("Aucun tableau trouvé."); return; }
       const table = tables.items[0];
 
-      // Charger lignes & cellules
       table.rows.load("items");
       await context.sync();
       for (const row of table.rows.items) row.cells.load("items");
       await context.sync();
 
-      // ------ En-tête ------
       const headerRow = table.rows.items[0];
       headerRow.shadingColor = headerColor;
       headerRow.font.color = "#ffffff";
       headerRow.font.bold = true;
 
-      // ------ Bordures (si supporté) ------
       try {
         table.getBorder("InsideHorizontal").color = borderColor;
         table.getBorder("InsideVertical").color = borderColor;
         table.getBorder("Outside").color = borderColor;
-      } catch (_) { /* certaines versions ne supportent pas getBorder */ }
+      } catch (_) {}
 
-      // ------ Bandes alternées ------
       for (let i = 1; i < table.rows.items.length; i++) {
         const row = table.rows.items[i];
-        if (banded && i % 2 === 1) {
-          row.shadingColor = bandColor;        // bande
-        } else {
-          row.shadingColor = "#ffffff";        // "désactiver" = blanc
-        }
+        if (banded && i % 2 === 1) row.shadingColor = bandColor;
+        else row.shadingColor = "#ffffff";
       }
 
-      // ------ Alignement horizontal du texte dans CHAQUE cellule ------
       const wordAlign = getWordAlignment(alignUI);
 
-      // charger les paragraphes de toutes les cellules
       for (const row of table.rows.items) {
         for (const cell of row.cells.items) {
           cell.body.paragraphs.load("items");
@@ -188,75 +201,46 @@ async function validateTable() {
       tables.load("items");
       await context.sync();
 
-      if (tables.items.length === 0) {
-        setStatus("❌ Aucun tableau trouvé dans le document.");
-        return;
-      }
-
+      if (tables.items.length === 0) { setStatus("❌ Aucun tableau trouvé."); return; }
       const table = tables.items[0];
 
-      // Charger les lignes
       table.rows.load("items");
       await context.sync();
-
-      // Charger les cellules de chaque ligne
-      for (const row of table.rows.items) {
-        row.cells.load("items");
-      }
+      for (const row of table.rows.items) row.cells.load("items");
       await context.sync();
 
       const rowCount = table.rows.items.length;
       const colCount = table.rows.items[0].cells.items.length;
 
-      if (rowCount < 1 || colCount < 1) {
-        setStatus("❌ Le tableau est vide ou mal structuré.");
-        return;
-      }
+      if (rowCount < 1 || colCount < 1) { setStatus("❌ Le tableau est vide ou mal structuré."); return; }
 
-      // Vérification en-tête
       const headerRow = table.rows.items[0];
       headerRow.load("shadingColor, font/color, font/bold");
       await context.sync();
 
       const bg = (headerRow.shadingColor || "#ffffff").toLowerCase();
       const fg = (headerRow.font.color || "#000000").toLowerCase();
-
-      // L'en-tête est OK si :
-      // 1. Il est en gras
-      // 2. La couleur de la police est différente du fond
-      // 3. Ce n'est pas blanc sur blanc
       const headerOK = headerRow.font.bold && fg !== bg && !(bg === "#ffffff" && fg === "#ffffff");
 
-      // Vérification bandes alternées
       let bandsOK = true;
-      if (rowCount > 1) { // au moins une ligne après l'en-tête
+      if (rowCount > 1) {
         const rowsAfterHeader = table.rows.items.slice(1);
-
-        // Vérifie si au moins une ligne a une couleur différente de blanc
         const anyColored = rowsAfterHeader.some(
           row => row.shadingColor && row.shadingColor.toLowerCase() !== "#ffffff" && row.shadingColor.toLowerCase() !== "white"
         );
-
         if (anyColored) {
-          // Si des couleurs sont appliquées, vérifier alternance
           for (let i = 0; i < rowsAfterHeader.length - 1; i++) {
             if (rowsAfterHeader[i].shadingColor === rowsAfterHeader[i + 1].shadingColor) {
               bandsOK = false;
               break;
             }
           }
-        } else {
-          // Pas de couleurs = bandes non appliquées volontairement → OK
-          bandsOK = true;
         }
       }
 
-      // Vérification alignement
       let alignmentOK = true;
       for (const row of table.rows.items) {
-        for (const cell of row.cells.items) {
-          cell.body.paragraphs.load("items/alignment");
-        }
+        for (const cell of row.cells.items) cell.body.paragraphs.load("items/alignment");
       }
       await context.sync();
 
@@ -268,10 +252,8 @@ async function validateTable() {
         }
       }
 
-      // Affichage du résultat
-      if (headerOK && bandsOK && alignmentOK) {
-        setStatus("✅ Tableau valide et bien mis en forme.");
-      } else {
+      if (headerOK && bandsOK && alignmentOK) setStatus("✅ Tableau valide et bien mis en forme.");
+      else {
         const problems = [];
         if (!headerOK) problems.push("En-tête illisible ou non gras");
         if (!bandsOK) problems.push("Pas de bandes alternées correctes");
