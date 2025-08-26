@@ -1,283 +1,372 @@
-/* global document, Office, Word */
-
-Office.onReady((info) => {
-  if (info.host === Office.HostType.Word) {
-      // Bouton de démarrage
-      document.getElementById("start-btn").onclick = startExercise;
-
-      // Boutons de l'exercice
-      document.getElementById("init-btn").onclick = initializeDocument;
-      document.getElementById("clear-btn").onclick = clearDocument;
-      document.getElementById("apply-style-btn").onclick = applyTableStyle;
-      document.getElementById("validate-btn").onclick = validateTable;
-
-      setStatus("Cliquez sur 'Commencer l'exercice' pour démarrer.");
+// tableau.js
+class TableauExercise {
+  constructor() {
+      this.currentStep = 1; // Start directly at step 1 since we come from welcome page
+      this.isInitialized = true; // Already initialized from welcome page
+      
+      this.initializeElements();
+      this.attachEventListeners();
+      this.initializeFromWelcome();
+      this.updateProgress();
   }
-});
 
-function setStatus(text) {
-  const s = document.getElementById("status");
-  if (s) s.textContent = text;
-}
+  initializeElements() {
+      // Buttons
+      this.validateBtn = document.getElementById('tableau-validate-btn');
+      this.closeResultsBtn = document.getElementById('tableau-close-results-btn');
 
-/** --------- CONFIRM maison --------- */
-function askConfirm(message) {
-  return new Promise((resolve) => {
-    const panel = document.getElementById("confirm-panel");
-    const text = document.getElementById("confirm-text");
-    const yes = document.getElementById("confirm-yes");
-    const no = document.getElementById("confirm-no");
+      // Modals
+      this.resultsModal = document.getElementById('tableau-results-modal');
 
-    text.textContent = message;
-    panel.hidden = false;
+      // Steps
+      this.stepInit = document.getElementById('tableau-step-init');
+      this.stepCustomize = document.getElementById('tableau-step-customize');
+      this.stepValidate = document.getElementById('tableau-step-validate');
 
-    const cleanup = () => {
-      yes.onclick = null;
-      no.onclick = null;
-      panel.hidden = true;
-    };
-    yes.onclick = () => { cleanup(); resolve(true); };
-    no.onclick  = () => { cleanup(); resolve(false); };
-  });
-}
-
-/** --------- Helpers --------- */
-function getWordAlignment(value) {
-  if (Word && Word.Alignment) {
-    if (value === "center") return Word.Alignment.centered;
-    if (value === "right")  return Word.Alignment.right;
-    return Word.Alignment.left;
+      // Other elements
+      this.status = document.getElementById('tableau-status');
+      this.progress = document.getElementById('tableau-progress');
+      this.tablePreview = document.getElementById('tableau-table-preview');
+      this.validationResult = document.getElementById('tableau-validation-result');
   }
-  if (value === "center") return "Centered";
-  if (value === "right")  return "Right";
-  return "Left";
-}
 
-/** --------- Bouton de départ --------- */
-async function startExercise() {
-  await Word.run(async (context) => {
-    const body = context.document.body;
-    body.paragraphs.load("items");
-    await context.sync();
+  attachEventListeners() {
+      this.validateBtn.addEventListener('click', () => this.handleValidation());
+      this.closeResultsBtn.addEventListener('click', () => this.hideModal(this.resultsModal));
 
-    const notEmpty =
-      body.paragraphs.items.length > 1 ||
-      (body.paragraphs.items.length === 1 && body.paragraphs.items[0].text.trim() !== "");
+      // Close modal on background click
+      [this.resultsModal].forEach(modal => {
+          modal.addEventListener('click', (e) => {
+              if (e.target === modal) {
+                  this.hideModal(modal);
+              }
+          });
+      });
+  }
 
-    let ok = true;
-    if (notEmpty) {
-        ok = await askConfirm("Le document contient déjà du texte. Voulez-vous l'effacer pour commencer l'exercice ?");
-        if (!ok) {
-            setStatus("Exercice annulé.");
-            return;
-        }
-        body.clear();
-        await context.sync();
-    }
+  initializeFromWelcome() {
+      // Update UI to show exercise is ready
+      this.status.textContent = "Exercice initialisé - Prêt pour la personnalisation";
+      this.status.style.background = "rgba(40, 167, 69, 0.2)";
+      
+      // Show the appropriate steps
+      this.stepCustomize.classList.remove('hidden');
+      this.stepValidate.classList.remove('hidden');
+      
+      // Generate sample table immediately
+      this.generateSampleTable();
+      
+      // Add animation
+      this.animateStep(this.stepCustomize);
+  }
 
-    // Affiche le reste des contrôles et masque le bouton de départ
-    document.getElementById("exercise-container").style.display = "block";
-    document.getElementById("start-btn").style.display = "none";
-
-    setStatus("Prêt ! Insérez le tableau ou appliquez un style.");
-  });
-}
-
-/** --------- Actions existantes --------- */
-async function initializeDocument() {
-  try {
-    await Word.run(async (context) => {
-      const body = context.document.body;
-      body.paragraphs.load("items");
-      await context.sync();
-
-      const notEmpty =
-        body.paragraphs.items.length > 1 ||
-        (body.paragraphs.items.length === 1 && body.paragraphs.items[0].text.trim() !== "");
-
-      if (notEmpty) {
-        const ok = await askConfirm("La page contient déjà du contenu. Voulez-vous l'effacer ?");
-        if (!ok) { setStatus("Initialisation annulée."); return; }
-        body.clear();
-        await context.sync();
+  handleInitialization() {
+      if (this.hasContent) {
+          this.showModal(this.confirmationModal);
+      } else {
+          this.initializeExercise();
       }
+  }
 
-      const data = [
-        ["Nom", "Âge", "Ville"],
-        ["Jean Dupont", "30", "Paris"],
-        ["Marie Curie", "35", "Lyon"],
-        ["Ali Benz", "28", "Marseille"],
-        ["Sophie Martin", "42", "Toulouse"]
+  confirmInitialization() {
+      this.hideModal(this.confirmationModal);
+      this.initializeExercise();
+  }
+
+  initializeExercise() {
+      this.isInitialized = true;
+      this.currentStep = 1;
+      
+      // Update UI
+      this.status.textContent = "Document initialisé - Prêt pour la personnalisation";
+      this.status.style.background = "rgba(40, 167, 69, 0.2)";
+      
+      // Hide init step, show customize step
+      this.stepInit.classList.add('hidden');
+      this.stepCustomize.classList.remove('hidden');
+      this.stepValidate.classList.remove('hidden');
+      
+      // Generate sample table
+      this.generateSampleTable();
+      
+      // Update progress
+      this.updateProgress();
+      
+      // Add some animation
+      this.animateStep(this.stepCustomize);
+  }
+
+  generateSampleTable() {
+      const sampleData = [
+          ['Produit', 'Catégorie', 'Prix', 'Stock', 'Statut'],
+          ['Laptop Dell XPS', 'Informatique', '1299€', '15', 'Disponible'],
+          ['iPhone 15 Pro', 'Téléphonie', '1199€', '8', 'Disponible'],
+          ['Samsung Galaxy Tab', 'Tablettes', '599€', '12', 'Disponible'],
+          ['MacBook Air M2', 'Informatique', '1499€', '5', 'Stock faible'],
+          ['AirPods Pro', 'Audio', '279€', '25', 'Disponible'],
+          ['Surface Pro 9', 'Informatique', '1099€', '0', 'Rupture']
       ];
 
-      const table = body.insertTable(data.length, data[0].length, Word.InsertLocation.end, data);
-      table.styleBuiltIn = "TableGrid";
+      const table = document.createElement('table');
+      table.className = 'tableau-sample-table';
+      
+      sampleData.forEach((row, index) => {
+          const tr = document.createElement('tr');
+          row.forEach(cell => {
+              const cellElement = document.createElement(index === 0 ? 'th' : 'td');
+              cellElement.textContent = cell;
+              tr.appendChild(cellElement);
+          });
+          table.appendChild(tr);
+      });
 
-      table.rows.load("items");
-      await context.sync();
-
-      const headerRow = table.rows.items[0];
-      headerRow.font.bold = true;
-      headerRow.font.color = "white";
-      headerRow.shadingColor = "#0078d7";
-
-      await context.sync();
-      setStatus("Document et tableau insérés. Vous pouvez appliquer un style et valider.");
-    });
-  } catch (err) {
-    console.error(err);
-    setStatus("Erreur lors de l'initialisation : " + (err.message || err));
+      this.tablePreview.innerHTML = '';
+      this.tablePreview.appendChild(table);
   }
-}
 
-async function applyTableStyle() {
-  try {
-    const headerColor = document.getElementById("header-color").value;
-    const bandColor   = document.getElementById("band-color").value;
-    const borderColor = document.getElementById("border-color").value;
-    const alignUI     = document.getElementById("cell-align").value;
-    const banded      = document.getElementById("banded").checked;
+  handleValidation() {
+      // Simulate validation process
+      this.validateBtn.disabled = true;
+      this.validateBtn.textContent = 'Validation en cours...';
+      
+      setTimeout(() => {
+          this.performValidation();
+          this.validateBtn.disabled = false;
+          this.validateBtn.textContent = 'Vérifier mon travail';
+      }, 2000);
+  }
 
-    await Word.run(async (context) => {
-      const tables = context.document.body.tables;
-      tables.load("items");
-      await context.sync();
+  performValidation() {
+      // Simulate different validation scenarios
+      const validationResults = this.simulateValidation();
+      
+      this.currentStep = 2;
+      this.updateProgress();
+      
+      this.displayValidationResults(validationResults);
+      this.showModal(this.resultsModal);
+  }
 
-      if (tables.items.length === 0) { setStatus("Aucun tableau trouvé."); return; }
-      const table = tables.items[0];
-
-      table.rows.load("items");
-      await context.sync();
-      for (const row of table.rows.items) row.cells.load("items");
-      await context.sync();
-
-      const headerRow = table.rows.items[0];
-      headerRow.shadingColor = headerColor;
-      headerRow.font.color = "#ffffff";
-      headerRow.font.bold = true;
-
-      try {
-        table.getBorder("InsideHorizontal").color = borderColor;
-        table.getBorder("InsideVertical").color = borderColor;
-        table.getBorder("Outside").color = borderColor;
-      } catch (_) {}
-
-      for (let i = 1; i < table.rows.items.length; i++) {
-        const row = table.rows.items[i];
-        if (banded && i % 2 === 1) row.shadingColor = bandColor;
-        else row.shadingColor = "#ffffff";
-      }
-
-      const wordAlign = getWordAlignment(alignUI);
-
-      for (const row of table.rows.items) {
-        for (const cell of row.cells.items) {
-          cell.body.paragraphs.load("items");
-        }
-      }
-      await context.sync();
-
-      for (const row of table.rows.items) {
-        for (const cell of row.cells.items) {
-          for (const p of cell.body.paragraphs.items) {
-            p.alignment = wordAlign;
+  simulateValidation() {
+      const scenarios = [
+          {
+              success: true,
+              score: 95,
+              message: "Excellent travail ! Votre tableau est parfaitement personnalisé.",
+              details: [
+                  { type: 'success', text: 'Style personnalisé appliqué correctement' },
+                  { type: 'success', text: 'Couleurs et bordures bien choisies' },
+                  { type: 'success', text: 'Ligne d\'en-tête correctement formatée' },
+                  { type: 'success', text: 'Bandes alternées appliquées' },
+                  { type: 'success', text: 'Tableau lisible et esthétique' }
+              ]
+          },
+          {
+              success: true,
+              score: 80,
+              message: "Très bon travail avec quelques améliorations possibles.",
+              details: [
+                  { type: 'success', text: 'Style personnalisé appliqué correctement' },
+                  { type: 'success', text: 'Couleurs bien choisies' },
+                  { type: 'warning', text: 'Bordures pourraient être plus visibles' },
+                  { type: 'success', text: 'Ligne d\'en-tête correctement formatée' },
+                  { type: 'warning', text: 'Alignement du texte à améliorer dans certaines cellules' }
+              ]
+          },
+          {
+              success: false,
+              score: 60,
+              message: "Bon début, mais plusieurs éléments nécessitent des corrections.",
+              details: [
+                  { type: 'success', text: 'Tableau présent et structuré' },
+                  { type: 'error', text: 'Style personnalisé non appliqué ou incomplet' },
+                  { type: 'warning', text: 'Couleurs peu contrastées, lisibilité difficile' },
+                  { type: 'error', text: 'Ligne d\'en-tête non formatée' },
+                  { type: 'warning', text: 'Bandes alternées manquantes' }
+              ]
           }
-        }
-      }
+      ];
 
-      await context.sync();
-      setStatus("Style appliqué (en-tête, bordures, bandes, alignement).");
-    });
-  } catch (err) {
-    console.error(err);
-    setStatus("Erreur style : " + (err.message || err));
+      return scenarios[Math.floor(Math.random() * scenarios.length)];
+  }
+
+  displayValidationResults(results) {
+      const title = document.getElementById('tableau-results-title');
+      const content = document.getElementById('tableau-results-content');
+      
+      title.textContent = results.success ? '✅ Validation réussie !' : '⚠️ Validation incomplète';
+      
+      const scoreColor = results.score >= 80 ? '#27ae60' : results.score >= 60 ? '#f39c12' : '#e74c3c';
+      
+      content.innerHTML = `
+          <div class="tableau-score-display" style="margin-bottom: 20px;">
+              <div style="font-size: 2rem; font-weight: bold; color: ${scoreColor};">
+                  ${results.score}/100
+              </div>
+              <p style="margin: 10px 0; font-size: 1.1rem; color: #555;">
+                  ${results.message}
+              </p>
+          </div>
+          
+          <div class="tableau-validation-details">
+              <h4 style="margin-bottom: 15px; color: #2c3e50;">Détails de la validation :</h4>
+              <ul class="tableau-validation-list">
+                  ${results.details.map(detail => `
+                      <li>
+                          <span class="tableau-validation-icon ${detail.type}">
+                              ${detail.type === 'success' ? '✅' : detail.type === 'warning' ? '⚠️' : '❌'}
+                          </span>
+                          ${detail.text}
+                      </li>
+                  `).join('')}
+              </ul>
+          </div>
+          
+          ${results.score < 80 ? `
+              <div style="margin-top: 20px; padding: 15px; background: #e8f4f8; border-radius: 8px; border-left: 4px solid #3498db;">
+                  <h5 style="color: #2980b9; margin-bottom: 10px;">💡 Conseils pour améliorer :</h5>
+                  <ul style="text-align: left; margin-left: 20px; color: #2c5282;">
+                      <li>Explorez les styles prédéfinis dans l'onglet "Création de tableau"</li>
+                      <li>Utilisez des couleurs contrastées pour améliorer la lisibilité</li>
+                      <li>Assurez-vous que la ligne d'en-tête se distingue clairement</li>
+                      <li>Testez différents alignements pour optimiser la présentation</li>
+                  </ul>
+              </div>
+          ` : ''}
+      `;
+
+      // Update main status
+      if (results.success && results.score >= 80) {
+          this.status.textContent = "Exercice terminé avec succès !";
+          this.status.style.background = "rgba(40, 167, 69, 0.3)";
+      } else {
+          this.status.textContent = "Exercice à améliorer";
+          this.status.style.background = "rgba(255, 193, 7, 0.3)";
+      }
+  }
+
+  updateProgress() {
+      const progressPercentage = (this.currentStep / 2) * 100;
+      this.progress.style.width = `${progressPercentage}%`;
+  }
+
+  showModal(modal) {
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+  }
+
+  hideModal(modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+  }
+
+  animateStep(step) {
+      step.style.opacity = '0';
+      step.style.transform = 'translateY(20px)';
+      
+      setTimeout(() => {
+          step.style.transition = 'all 0.5s ease';
+          step.style.opacity = '1';
+          step.style.transform = 'translateY(0)';
+      }, 100);
   }
 }
 
-async function validateTable() {
-  try {
-    await Word.run(async (context) => {
-      const tables = context.document.body.tables;
-      tables.load("items");
-      await context.sync();
+document.addEventListener('DOMContentLoaded', () => {
+// MENU ET CONFIRMATION
+const startBtn = document.getElementById('tableau-start-btn');
+const confirmationModal = document.getElementById('tableau-confirmation-modal');
+const cancelBtn = document.getElementById('tableau-cancel-btn');
+const confirmBtn = document.getElementById('tableau-confirm-btn');
 
-      if (tables.items.length === 0) { setStatus("❌ Aucun tableau trouvé."); return; }
-      const table = tables.items[0];
+startBtn.addEventListener('click', () => {
+    const tablePreview = document.getElementById('tableau-table-preview');
+    const hasContent = tablePreview.innerHTML.trim() !== '';
 
-      table.rows.load("items");
-      await context.sync();
-      for (const row of table.rows.items) row.cells.load("items");
-      await context.sync();
+    if (hasContent) {
+        confirmationModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    } else {
+        startExercise();
+    }
+});
 
-      const rowCount = table.rows.items.length;
-      const colCount = table.rows.items[0].cells.items.length;
+cancelBtn.addEventListener('click', () => {
+    confirmationModal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+});
 
-      if (rowCount < 1 || colCount < 1) { setStatus("❌ Le tableau est vide ou mal structuré."); return; }
+confirmBtn.addEventListener('click', () => {
+    document.getElementById('tableau-table-preview').innerHTML = '';
+    confirmationModal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    startExercise();
+});
 
-      const headerRow = table.rows.items[0];
-      headerRow.load("shadingColor, font/color, font/bold");
-      await context.sync();
+function startExercise() {
+    document.getElementById('tableau-menu-step').classList.add('hidden');
+    new TableauExercise();  // L'exercice ne démarre que maintenant
+}
+});
 
-      const bg = (headerRow.shadingColor || "#ffffff").toLowerCase();
-      const fg = (headerRow.font.color || "#000000").toLowerCase();
-      const headerOK = headerRow.font.bold && fg !== bg && !(bg === "#ffffff" && fg === "#ffffff");
 
-      let bandsOK = true;
-      if (rowCount > 1) {
-        const rowsAfterHeader = table.rows.items.slice(1);
-        const anyColored = rowsAfterHeader.some(
-          row => row.shadingColor && row.shadingColor.toLowerCase() !== "#ffffff" && row.shadingColor.toLowerCase() !== "white"
-        );
-        if (anyColored) {
-          for (let i = 0; i < rowsAfterHeader.length - 1; i++) {
-            if (rowsAfterHeader[i].shadingColor === rowsAfterHeader[i + 1].shadingColor) {
-              bandsOK = false;
-              break;
-            }
+// Add some interactive features
+document.addEventListener('DOMContentLoaded', () => {
+  // Add hover effects to task list items
+  const taskItems = document.querySelectorAll('.tableau-task-list li');
+  taskItems.forEach(item => {
+      item.addEventListener('mouseenter', () => {
+          item.style.backgroundColor = '#e3f2fd';
+          item.style.borderLeft = '4px solid #2196f3';
+      });
+      
+      item.addEventListener('mouseleave', () => {
+          item.style.backgroundColor = 'white';
+          item.style.borderLeft = 'none';
+      });
+  });
+
+  // Add keyboard navigation
+  document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+          const visibleModal = document.querySelector('.tableau-modal:not(.hidden)');
+          if (visibleModal) {
+              visibleModal.classList.add('hidden');
+              document.body.style.overflow = 'auto';
           }
-        }
       }
+  });
 
-      let alignmentOK = true;
-      for (const row of table.rows.items) {
-        for (const cell of row.cells.items) cell.body.paragraphs.load("items/alignment");
-      }
-      await context.sync();
+  // Add smooth scrolling for better UX
+  const smoothScroll = (target) => {
+      target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+      });
+  };
 
-      for (const row of table.rows.items) {
-        for (const cell of row.cells.items) {
-          for (const p of cell.body.paragraphs.items) {
-            if (p.alignment === "Unknown") alignmentOK = false;
-          }
-        }
-      }
-
-      if (headerOK && bandsOK && alignmentOK) setStatus("✅ Tableau valide et bien mis en forme.");
-      else {
-        const problems = [];
-        if (!headerOK) problems.push("En-tête illisible ou non gras");
-        if (!bandsOK) problems.push("Pas de bandes alternées correctes");
-        if (!alignmentOK) problems.push("Alignement incohérent");
-        setStatus("⚠️ Tableau trouvé mais problèmes : " + problems.join(", "));
-      }
-    });
-  } catch (err) {
-    setStatus("Erreur validation : " + (err.message || err));
-  }
-}
-
-async function clearDocument() {
-  try {
-    const doClear = await askConfirm("Voulez-vous effacer tout le contenu du document ?");
-    if (!doClear) { setStatus("Suppression annulée."); return; }
-
-    await Word.run(async (context) => {
-      context.document.body.clear();
-      await context.sync();
-      setStatus("Document effacé.");
-    });
-  } catch (err) {
-    console.error(err);
-    setStatus("Erreur suppression : " + (err.message || err));
-  }
-}
+  // Add click handlers for smooth navigation
+  document.querySelectorAll('button').forEach(button => {
+      button.addEventListener('click', (e) => {
+          // Add ripple effect
+          const ripple = document.createElement('span');
+          ripple.classList.add('ripple');
+          button.appendChild(ripple);
+          
+          const rect = button.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const x = e.clientX - rect.left - size / 2;
+          const y = e.clientY - rect.top - size / 2;
+          
+          ripple.style.width = ripple.style.height = size + 'px';
+          ripple.style.left = x + 'px';
+          ripple.style.top = y + 'px';
+          
+          setTimeout(() => {
+              if (ripple.parentNode) {
+                  ripple.parentNode.removeChild(ripple);
+              }
+          }, 600);
+      });
+  });
+});

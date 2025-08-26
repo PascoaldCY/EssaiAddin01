@@ -1,79 +1,118 @@
-<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
-<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
-
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tableau - Test Add-in</title>
-
-    <!-- Office JavaScript API -->
-    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
-
-    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
-    <link rel="stylesheet" href="https://res-1.cdn.office.net/files/fabric-cdn-prod_20230815.002/office-ui-fabric-core/11.1.0/css/fabric.min.css"/>
-
-    <!-- Template styles -->
-    <link href="tableau.css" rel="stylesheet" type="text/css" />
-    <script src="tableau.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice Tableaux Word</title>
+    <link rel="stylesheet" href="tableau.css">
 </head>
+<body>
+    <div class="tableau-extension-container">
+        <header class="tableau-header">
+            <h1>📊 Exercice : Personnalisation des Tableaux Word</h1>
+            <div class="tableau-status" id="tableau-status">En attente d'initialisation</div>
+        </header>
 
-<body class="ms-font-m ms-welcome ms-Fabric">
-    <header>
-        <h1>Exercice : personnaliser un tableau</h1>
-    </header>
+        <main class="tableau-main-content">
+            <!-- MENU DE BIENVENUE -->
+            <div class="tableau-step" id="tableau-menu-step">
+                <h2>📊 Bienvenue dans l'exercice Tableaux Word</h2>
+                <p>Cliquez sur le bouton ci-dessous pour commencer.</p>
+                <button class="tableau-btn tableau-btn-primary" id="tableau-start-btn">Commencer l'exercice</button>
+            </div>
 
-    <main>
-        <!-- Bouton de démarrage -->
-        <div id="start-container">
-            <button id="start-btn">Commencer l'exercice</button>
-        </div>
-      
-        <!-- Conteneur de l'exercice, caché au début -->
-        <div id="exercise-container" style="display:none;">
-            <div class="controls">
-                <button id="init-btn">Initialiser (insérer document + tableau)</button>
-                <button id="clear-btn">Effacer le document</button>
+            <section class="tableau-instructions-section">
+                <h2>📋 Instructions</h2>
+                <div class="tableau-step-container">
+                    <div class="tableau-step" id="tableau-step-init">
+                        <h3>🚀 Étape 1 : Initialisation</h3>
+                        <p>Cliquez sur "Initialiser l'exercice" pour créer un document Word avec un tableau de base.</p>
+                        <button class="tableau-btn tableau-btn-primary" id="tableau-init-btn">Initialiser l'exercice</button>
+                    </div>
+
+                    <div class="tableau-step hidden" id="tableau-step-customize">
+                        <h3>🎨 Étape 2 : Personnalisation du tableau</h3>
+                        <p>Maintenant que votre document est créé avec un tableau, vous devez :</p>
+                        <ul class="tableau-task-list">
+                            <li>
+                                <span class="tableau-task-icon">🎨</span>
+                                <span class="tableau-task-text">Modifier le <strong>style du tableau</strong> pour créer une mise en page personnalisée</span>
+                            </li>
+                            <li>
+                                <span class="tableau-task-icon">🌈</span>
+                                <span class="tableau-task-text">Ajuster les <strong>couleurs, bordures, polices et alignement</strong> du texte dans les cellules</span>
+                            </li>
+                            <li>
+                                <span class="tableau-task-icon">📊</span>
+                                <span class="tableau-task-text">Appliquer des <strong>bandes alternées</strong> pour améliorer la lisibilité</span>
+                            </li>
+                            <li>
+                                <span class="tableau-task-icon">📋</span>
+                                <span class="tableau-task-text">Mettre en forme la <strong>ligne d'en-tête</strong> pour la distinguer</span>
+                            </li>
+                            <li>
+                                <span class="tableau-task-icon">👁️</span>
+                                <span class="tableau-task-text">S'assurer que le tableau reste <strong>lisible et esthétique</strong></span>
+                            </li>
+                        </ul>
+                        
+                        <div class="tableau-tips-box">
+                            <h4>💡 Conseils pratiques :</h4>
+                            <ul>
+                                <li>Utilisez l'onglet "Création de tableau" dans Word</li>
+                                <li>Essayez différents styles prédéfinis avant de personnaliser</li>
+                                <li>Pensez à la cohérence des couleurs avec votre document</li>
+                                <li>Vérifiez la lisibilité sur différentes tailles d'écran</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tableau-step hidden" id="tableau-step-validate">
+                        <h3>✅ Étape 3 : Validation</h3>
+                        <p>Une fois vos modifications terminées, cliquez sur "Vérifier mon travail" :</p>
+                        <button class="tableau-btn tableau-btn-success" id="tableau-validate-btn">Vérifier mon travail</button>
+                        <div class="tableau-validation-result hidden" id="tableau-validation-result"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="tableau-preview-section">
+                <h2>👁️ Aperçu du tableau à personnaliser</h2>
+                <div class="tableau-table-preview" id="tableau-table-preview">
+                    <p class="tableau-preview-placeholder">Le tableau apparaîtra ici après l'initialisation</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="tableau-footer">
+            <div class="tableau-progress-bar">
+                <div class="tableau-progress" id="tableau-progress"></div>
             </div>
-      
-            <fieldset class="style-controls">
-                <legend>Style du tableau</legend>
-                <label>Couleur en-tête: <input id="header-color" type="color" value="#0078d7"/></label>
-                <label>Couleur bandes: <input id="band-color" type="color" value="#f3f3f3"/></label>
-                <label>Bords: <input id="border-color" type="color" value="#cccccc"/></label>
-                <label>Alignement:
-                    <select id="cell-align">
-                        <option value="left">Gauche</option>
-                        <option value="center" selected>Centre</option>
-                        <option value="right">Droite</option>
-                    </select>
-                </label>
-                <label><input id="banded" type="checkbox" checked/> Bandes alternées</label>
-                <button id="apply-style-btn">Appliquer le style</button>
-            </fieldset>
-      
-            <div class="actions">
-                <button id="validate-btn">Valider le tableau</button>
-            </div>
-      
-            <div id="status" aria-live="polite"></div>
-        </div>
-      
-        <!-- Confirm maison -->
-        <div id="confirm-panel" class="confirm-panel" hidden>
-            <div class="confirm-modal">
-                <p id="confirm-text">Êtes-vous sûr ?</p>
-                <div class="confirm-buttons">
-                    <button id="confirm-yes">Oui</button>
-                    <button id="confirm-no" type="button">Non</button>
+            <p>Exercice créé pour l'apprentissage des tableaux Microsoft Word</p>
+        </footer>
+
+        <!-- Modal de confirmation -->
+        <div class="tableau-modal hidden" id="tableau-confirmation-modal">
+            <div class="tableau-modal-content">
+                <h3>⚠️ Confirmation</h3>
+                <p>La page n'est pas vide. Voulez-vous effacer le contenu existant pour commencer l'exercice ?</p>
+                <div class="tableau-modal-buttons">
+                    <button class="tableau-btn tableau-btn-secondary" id="tableau-cancel-btn">Annuler</button>
+                    <button class="tableau-btn tableau-btn-danger" id="tableau-confirm-btn">Effacer et continuer</button>
                 </div>
             </div>
         </div>
-      </main>       
-    
-</body>
 
+        <!-- Modal de résultats -->
+        <div class="tableau-modal hidden" id="tableau-results-modal">
+            <div class="tableau-modal-content">
+                <h3 id="tableau-results-title">Résultats de la validation</h3>
+                <div id="tableau-results-content"></div>
+                <button class="tableau-btn tableau-btn-primary" id="tableau-close-results-btn">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="tableau.js"></script>
+</body>
 </html>
