@@ -4,7 +4,7 @@
   <Version>1.0.0.0</Version>
   <ProviderName>Contoso</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="DiagnoWord"/>
+  <DisplayName DefaultValue="Nom"/>
   <Description DefaultValue="A template to get started."/>
   <IconUrl DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-64.png"/>
@@ -74,11 +74,11 @@
       <bt:ShortStrings>
         <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Show Task Pane"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Montre le panneau"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="GetStarted.Description" DefaultValue="Your sample add-in loaded successfully. Go to the HOME tab and click the 'Show Task Pane' button to get started."/>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to Show a Taskpane"/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Cliquez pour montrer le logiciel"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
