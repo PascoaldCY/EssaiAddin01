@@ -1,39 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" 
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" 
-           xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" 
-           xsi:type="TaskPaneApp">
-  
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
   <Id>8e145833-1eb4-41d9-a02b-7fa65ea398de</Id>
   <Version>1.0.0.0</Version>
   <ProviderName>Contoso</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Générateur de Tableaux"/>
-  <Description DefaultValue="Un outil pour créer des tableaux personnalisés"/>
-  
-  <!-- Icônes par défaut si vos icônes ne sont pas accessibles -->
-  <IconUrl DefaultValue="https://static2.sharepointonline.com/files/fabric/assets/brand-icons/document/png/docx_32x1.png"/>
-  <HighResolutionIconUrl DefaultValue="https://static2.sharepointonline.com/files/fabric/assets/brand-icons/document/png/docx_32x1.png"/>
-  
+  <DisplayName DefaultValue="Nom"/>
+  <Description DefaultValue="A template to get started."/>
+  <IconUrl DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://www.contoso.com/help"/>
-  
   <AppDomains>
-    <AppDomain>https://pascoaldcy.github.io</AppDomain>
+    <AppDomain>https://www.contoso.com</AppDomain>
   </AppDomains>
-  
   <Hosts>
-    <Host Name="Word"/>
+    <Host Name="Document"/>
   </Hosts>
-  
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/tableau.html"/>
+    <SourceLocation DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/taskpane.html"/>
   </DefaultSettings>
-  
   <Permissions>ReadWriteDocument</Permissions>
-  
-  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" 
-                    xsi:type="VersionOverridesV1_0">
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
     <Hosts>
       <Host xsi:type="Document">
         <DesktopFormFactor>
@@ -42,8 +28,7 @@
             <Description resid="GetStarted.Description"/>
             <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
           </GetStarted>
-          
-          <!-- FunctionFile simplifié ou retiré si pas nécessaire -->
+          <FunctionFile resid="Commands.Url"/>
           <ExtensionPoint xsi:type="PrimaryCommandSurface">
             <OfficeTab id="TabHome">
               <Group id="CommandsGroup">
@@ -53,7 +38,6 @@
                   <bt:Image size="32" resid="Icon.32x32"/>
                   <bt:Image size="80" resid="Icon.80x80"/>
                 </Icon>
-                
                 <Control xsi:type="Button" id="TaskpaneButton">
                   <Label resid="TaskpaneButton.Label"/>
                   <Supertip>
@@ -76,29 +60,25 @@
         </DesktopFormFactor>
       </Host>
     </Hosts>
-    
     <Resources>
       <bt:Images>
-        <!-- Icônes de fallback si vos icônes ne marchent pas -->
-        <bt:Image id="Icon.16x16" DefaultValue="https://static2.sharepointonline.com/files/fabric/assets/brand-icons/document/png/docx_16x1.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://static2.sharepointonline.com/files/fabric/assets/brand-icons/document/png/docx_32x1.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://static2.sharepointonline.com/files/fabric/assets/brand-icons/document/png/docx_32x1.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-80.png"/>
       </bt:Images>
-      
       <bt:Urls>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/commands.html"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/tableau.html"/>
       </bt:Urls>
-      
       <bt:ShortStrings>
-        <bt:String id="GetStarted.Title" DefaultValue="Démarrer avec votre add-in!"/>
-        <bt:String id="CommandsGroup.Label" DefaultValue="Tableaux"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Créer Tableau"/>
+        <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
+        <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Montre le panneau"/>
       </bt:ShortStrings>
-      
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="Votre add-in s'est chargé avec succès. Cliquez sur le bouton pour commencer."/>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Ouvrir l'outil de création de tableaux"/>
+        <bt:String id="GetStarted.Description" DefaultValue="Your sample add-in loaded successfully. Go to the HOME tab and click the 'Show Task Pane' button to get started."/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Cliquez pour montrer le logiciel"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
