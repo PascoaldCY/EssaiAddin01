@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
-  <Id>8e145833-1eb4-41d9-a02b-7fa65ea398de</Id>
+  <Id>85bd582b-3f52-402c-b20a-824ba00c3c6c</Id>
   <Version>1.0.0.0</Version>
-  <ProviderName>Contoso</ProviderName>
-  <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Nom"/>
+  <ProviderName>Atelier207</ProviderName>
+  <DefaultLocale>fr-FR</DefaultLocale>
+  <DisplayName DefaultValue="Complément AJE"/>
   <Description DefaultValue="A template to get started."/>
   <IconUrl DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-64.png"/>
@@ -62,7 +62,7 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-16.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/icon-16.png"/>
         <bt:Image id="Icon.32x32" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-32.png"/>
         <bt:Image id="Icon.80x80" DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-80.png"/>
       </bt:Images>
@@ -73,12 +73,12 @@
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
-        <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Montre le panneau"/>
+        <bt:String id="CommandsGroup.Label" DefaultValue="Exercices Word"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Texte sous le bouton"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="GetStarted.Description" DefaultValue="Your sample add-in loaded successfully. Go to the HOME tab and click the 'Show Task Pane' button to get started."/>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Cliquez pour montrer le logiciel"/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Bulle sur le bouton"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
