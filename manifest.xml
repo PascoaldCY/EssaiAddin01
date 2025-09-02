@@ -11,9 +11,10 @@
   <SupportUrl DefaultValue="https://www.contoso.com/help"/>
   <AppDomains>
     <AppDomain>https://www.contoso.com</AppDomain>
+    <AppDomain>https://pascoaldcy.github.io</AppDomain>
   </AppDomains>
   <Hosts>
-    <Host Name="Document"/>
+    <Host Name="Word"/>
   </Hosts>
   <DefaultSettings>
     <SourceLocation DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/tableau.html"/>
