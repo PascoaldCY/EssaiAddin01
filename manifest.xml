@@ -4,7 +4,7 @@
   <Version>1.0.0.0</Version>
   <ProviderName>Atelier207</ProviderName>
   <DefaultLocale>fr-FR</DefaultLocale>
-  <DisplayName DefaultValue="Complément AJE"/>
+  <DisplayName DefaultValue="Complément tableau"/>
   <Description DefaultValue="A template to get started."/>
   <IconUrl DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://pascoaldcy.github.io/EssaiAddin01/assets/icon-64.png"/>
@@ -73,8 +73,8 @@
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
-        <bt:String id="CommandsGroup.Label" DefaultValue="Exercices Word"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Texte sous le bouton"/>
+        <bt:String id="CommandsGroup.Label" DefaultValue="Exercice tableau"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="exercice pour tableau"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="GetStarted.Description" DefaultValue="Your sample add-in loaded successfully. Go to the HOME tab and click the 'Show Task Pane' button to get started."/>
